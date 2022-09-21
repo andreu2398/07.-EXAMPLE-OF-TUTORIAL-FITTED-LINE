@@ -1,0 +1,74 @@
+---
+title: "How to Add a Fitted Line to a Scatterplot in R"
+author: "Andreu"
+date: '2022-08-31'
+output: html_document
+---
+
+```{r setup , echo = FALSE}
+knitr::opts_chunk$set(echo = TRUE , warning = FALSE)
+```
+
+## HOW TO ADD A FITTED LINE TO A SCATTERPLOT IN R
+
+This basic example code is based on the following **data**:
+
+```{r data}
+set.seed(123)                        # Set seed for reproducibility
+x <- rnorm(30)                       # Create x variable
+y <- x + rnorm(30)                   # Create correlated y variable
+df <- data.frame(x , y)              # Create dataframe
+```
+
+The **package** that we will be using for this example is ggplot2:
+
+```{r package}
+#install.packages("ggplot2")
+library(ggplot2)
+```
+
+First, we have to create the **scatter plot** that we will want to fit:
+
+```{r scatterplot}
+p <- ggplot(data = df , aes(x = x , y = y)) +
+    geom_point()
+```
+
+Our scatter plot looks as follows:
+
+```{r p , echo = FALSE}
+p
+```
+
+Then, we add the **fitted line** with the function called ```geom_smooth()```:
+
+```{r fitted 1 , message = FALSE}
+p + geom_smooth()
+```
+
+After doing that, you can try to change some of the options of this function, such as ```method``` or ```formula```. Some of the methods available are:
+
+    - "loess" -> this is the method used by default.
+    - "lm" -> fits a linear model, giving the best line of it.
+    - "rlm" -> works like "lm", but uses a robust fitting algorithm so that outliers don't affect the fit as much. It's part of the MASS package, so remember to load it first.
+
+```{r fitted 2}
+p + geom_smooth(method = "lm", formula = y ~ poly(x,3))
+```
+
+Finally, you can also experiment with the function ```stat_smooth``` and combining it with ```geom_smooth``` in infinite ways:
+
+```{r fitted 3 , message = FALSE}
+p + geom_smooth() + stat_smooth(se = TRUE , level = 0.7 , span = 0.6)
+```
+
+```{r fitted 4 , message = FALSE}
+p + geom_smooth(aes(colour = "loess") , method = "loess", se = FALSE) + 
+    geom_smooth(aes(colour = "lm")    , method = "lm"   , se = FALSE)
+```
+
+
+
+
+
+
